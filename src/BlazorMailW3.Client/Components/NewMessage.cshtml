@@ -1,0 +1,107 @@
+@inject Services.AppState appState
+@using Microsoft.AspNetCore.Blazor.Components
+@using BlazorMailW3.Shared
+
+
+<!-- Modal that pops up when you click on "New Message" -->
+    <div class="w3-modal w3-show" style="z-index:4;@isVisible ? display:block; : display: none">
+
+        <div class="w3-modal-content w3-animate-zoom">
+            <div class="w3-container w3-padding w3-red">
+                <span class="w3-button w3-red w3-right w3-xxlarge"><i class="oi oi-remove"></i></span>
+                <h2>Send Mail</h2>
+            </div>
+
+            @*FORM*@
+            <div class="w3-panel" onkeydown="@SubmitEnter">
+
+                <label>To</label>
+                <input bind="@Recipient" class="w3-input w3-border w3-margin-bottom" type="text"/>
+
+                <label>Subject</label>
+                <input bind="@Subject" on class="w3-input w3-border w3-margin-bottom" type="text"/>
+
+                <textarea oninput="@OnBodyInput"
+                        bind="@Body" class="w3-input w3-border w3-margin-bottom" style="height:150px" placeholder="Write a new message...?"/>
+
+                <div class="w3-section">
+                    <a onclick="@Cancel" class="w3-button w3-red">Cancel  <i class="oi oi-remove"></i></a>
+                    <a onclick="@Send" class="w3-button w3-light-grey w3-right">Send  <i class="oi oi-paper-plane"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@functions {    
+
+        bool isVisible = false;
+    [Parameter]
+    Action OnCloseModal { get; set; }
+
+    public string Body { get; set; }
+    public string Recipient { get; set; }
+    public string Subject { get; set; }
+
+    public MessageThread Thread { get; set; }
+
+    void Cancel()
+    {
+        isVisible = false;
+        Console.WriteLine("Cancel Modal Window");
+        OnCloseModal?.Invoke();
+    }
+
+    void OnInvalid()
+    {
+        Console.WriteLine("Invalid");
+    }
+
+    void OnBodyChanged()
+    {
+        Console.WriteLine("Body changed");
+    }
+
+    void OnBodyInput()
+    {
+        Console.WriteLine("Body input changed");
+    }
+
+    void SubmitEnter(UIKeyboardEventArgs key)
+    {
+        if (key.Key == "Enter")
+        {
+            Console.WriteLine($"Enter pushed on form. Submitting...");
+            this.Send();
+        }
+    }
+
+    bool QuickValidateFields()
+    {
+        if (!string.IsNullOrEmpty(this.Recipient))
+            if (!string.IsNullOrEmpty(this.Body))
+                if (!string.IsNullOrEmpty(this.Subject))
+                {
+                    Console.WriteLine("Form is quick valid");
+                    return true;
+                }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Sends email through the service in AppState
+    /// </summary>
+    void Send()
+    {
+        //TODO: Some better Form validation before going to server
+        if (!QuickValidateFields())
+        {
+            Console.WriteLine("Form isn't valid");
+            return;
+        }
+
+        appState.SendEmail(Recipient, Body, Subject);
+
+        Cancel();
+    }
+}

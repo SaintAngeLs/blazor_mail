@@ -1,0 +1,48 @@
+﻿@page "/message/{id:guid}"
+@inject Services.AppState appState
+
+<div class="w3-container">
+
+    @if (Thread != null)
+    {
+        foreach (var message in Thread.Messages)
+        {
+    <div id="Borge" class="person">
+        <br>
+        <img class="w3-round  w3-animate-top" src="@message.From.Avatar" style="width:20%;">
+        <h5 class="w3-opacity">Subject: @message.Subject</h5>
+        <h4><i class="oi oi-clock"></i> From @message.From.Name, @message.Date</h4>
+        <a class="w3-button w3-light-grey" href="#">Reply<i class="w3-margin-left oi oi-mail-reply"></i></a>
+        <a class="w3-button w3-light-grey" href="#">Forward<i class="w3-margin-left oi oi-arrow-right"></i></a>
+        <hr>
+
+        @{
+            var split = message.Body.Split('\n', '\r');
+            foreach (var msg in split)
+            {
+                <p>@msg</p>
+            }
+        }
+    </div>
+        }
+    }
+
+</div>
+
+@functions{
+
+    protected BlazorMailW3.Shared.MessageThread Thread { get; set; }
+
+    [Parameter]
+    Guid id { get; set; }
+
+    protected override void OnInit()
+    {
+        Thread = appState.Inbox.FirstOrDefault(x => x.Id == id);
+
+        if (Thread != null)
+            return;
+
+        Thread = appState.Sent.FirstOrDefault(x => x.Id == id);
+    }
+}

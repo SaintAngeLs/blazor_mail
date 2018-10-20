@@ -1,0 +1,22 @@
+﻿@using BlazorMailW3.Shared
+@page "/inbox"
+@inject Services.AppState appState
+
+<div>
+
+    @if (appState.Inbox == null)
+    {
+        <div><p>Inbox Loading</p></div>
+    }
+    else
+    {                
+        <div class="w3-container">
+
+            <h2>Inbox</h2>
+
+            <MessageThread threads="@appState.Inbox"></MessageThread>
+            
+        </div>
+    }
+
+</div>

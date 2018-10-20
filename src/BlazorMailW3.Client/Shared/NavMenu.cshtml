@@ -1,0 +1,92 @@
+﻿@inject Services.AppState appState
+<div>
+    <i onclick="@ToggleNavMenu" class="oi oi-menu w3-button w3-gray w3-hide-large w3-xlarge w3-margin-left w3-margin-top">
+    </i>
+
+    <a onclick="@ToggleShowMessage"
+       class="w3-hide-large w3-red w3-button w3-right w3-margin-top w3-margin-right">
+        <i class="oi oi-pencil"></i>
+    </a>
+</div>
+
+
+<nav class="w3-sidebar w3-bar-block w3-card w3-collapse w3-white w3-animate-left"
+     style="z-index:3;width:320px;display:@display;top:0px"
+     id="mySidebar">
+
+    <a href="" class="w3-bar-item w3-button w3-border-bottom w3-large">
+        <img src="/w3images/w3logo.png" style="width:60%;">
+    </a>
+
+    <a onclick="@ToggleNavMenu" style="display:@display"
+       class="w3-bar-item w3-button w3-hide-large w3-large">
+        <i class="oi oi-x"></i>
+        Close
+    </a>
+
+    <a class="w3-bar-item w3-button w3-dark-grey w3-button w3-hover-black w3-left-align"
+       onclick="@ToggleShowMessage">
+        New Message
+        <i class="w3-padding oi oi-pencil"></i>
+    </a>
+
+    @*INBOX onclick="myFunc('Demo1')" *@
+    <NavLink href="/inbox" class="nav-item w3-bar-item w3-button">
+        <div class="w3-badge w3-small w3-green">
+            @appState.Inbox.Count
+        </div>
+        <i class="oi oi-inbox w3-margin-left"></i>
+        Inbox
+    </NavLink>
+
+
+    @*SENT*@
+    <NavLink href="/sent" class="nav-item w3-bar-item w3-button">
+        <div class="w3-badge w3-small w3-green">
+            @appState.Sent.Count
+        </div>
+        <i class="oi oi-external-link w3-margin-left"></i>
+        Sent
+    </NavLink>
+
+    <a href="#" class="w3-bar-item w3-button"><i class="oi oi-project w3-margin-right"></i>Drafts</a>
+    <a href="#" class="w3-bar-item w3-button"><i class="oi oi-trash w3-margin-right"></i>Trash</a>
+
+</nav>
+
+
+
+
+@if (showNewMessage)
+{
+    <NewMessage OnCloseModal="@ToggleShowMessage"></NewMessage>
+}
+
+
+@functions {
+bool collapseNavMenu = false;
+bool showNewMessage = false;
+string display = "block";
+
+protected override void OnInit()
+{
+    appState.OnStateChanged += StateHasChanged;
+}
+
+void ToggleNavMenu()
+{
+    collapseNavMenu = !collapseNavMenu;
+    display = collapseNavMenu ? "none" : "block";
+
+    Console.WriteLine($"Collapsed Menu: {collapseNavMenu}");
+    StateHasChanged();
+}
+
+void ToggleShowMessage()
+{
+    showNewMessage = !showNewMessage;
+    Console.WriteLine($"New Message Open: {showNewMessage}");
+    StateHasChanged();
+}
+
+}

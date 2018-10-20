@@ -1,0 +1,22 @@
+﻿@inherits BlazorLayoutComponent
+@inject Services.AppState state
+
+<div>
+    <NavMenu />
+</div>
+
+<div class="w3-main" style="margin-left:320px;">
+
+    <header class="w3-container w3-red w3-margin-left w3-margin-top">
+        <h2>Blazor Mail</h2>
+    </header>
+
+    @Body
+</div>
+
+@functions{        
+    protected override async Task OnInitAsync()
+    {
+        await state.Init();
+    }
+}

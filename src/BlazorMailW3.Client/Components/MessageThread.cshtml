@@ -1,0 +1,49 @@
+@using Microsoft.AspNetCore.Blazor.Components
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+
+<div class="MessageThread">
+    <table class="w3-table w3-hoverable">
+        <thead>
+            <tr class="w3-light-grey">
+                <th>From</th>
+                <th>Subject</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var thread in Threads)
+            {
+                <tr onclick="@(() => Navigate(thread.Id))" style="cursor:pointer">
+                    <td>@thread.Messages[0].From.Email</td>
+                    <td>@thread.Messages[0].Subject</td>
+                    <td></td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+@functions {
+
+    [Parameter]
+    IList<BlazorMailW3.Shared.MessageThread> Threads { get; set; }
+
+    bool rendered = false;
+    protected override void OnAfterRender()
+    {
+        if (!rendered) rendered = true;
+    }
+
+    protected string Navigate(Guid id)
+    {
+        Console.WriteLine("Navigating");
+
+        if (!rendered) return "";
+
+        UriHelper.NavigateTo($"/message/{id}");
+
+        return "";
+    }
+}

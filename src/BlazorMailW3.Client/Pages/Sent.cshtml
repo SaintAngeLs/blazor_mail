@@ -1,0 +1,22 @@
+﻿@using BlazorMailW3.Shared
+@page "/sent"
+@inject Services.AppState appState
+
+<div>
+
+    @if (appState.Inbox == null)
+    {
+        <div><p>Sent Items Loading</p></div>
+    }
+    else
+    {
+        <div class="w3-container">
+
+            <h2>Sent</h2>
+
+            <MessageThread threads="@appState.Sent"></MessageThread>
+
+        </div>
+    }
+
+</div>
