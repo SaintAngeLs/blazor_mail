@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  blazorserverapp:
+    image: blazorapp
+    build:
+      context: .
+      dockerfile: BlazorMailW3.Server/Dockerfile
+    ports:
+      - "4658:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
